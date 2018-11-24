@@ -3,38 +3,49 @@ module Main where
 import           Options.Applicative
 import           Data.Semigroup                 ( (<>) )
 
-data Sample = Sample
-  { hello      :: String
-  , quiet      :: Bool
-  , enthusiasm :: Int }
+import           Conway.Glider                  ( runGlider )
 
-sample :: Parser Sample
-sample =
-  Sample
+data ConwayOpts = ConwayOpts
+  { seedName      :: String
+  , numGens :: Int }
+
+conwayOpts :: Parser ConwayOpts
+conwayOpts =
+  ConwayOpts
     <$> strOption
-          (  long "hello"
-          <> metavar "TARGET"
-          <> help "Target for the greeting"
+          (long "seed-name" <> short 's' <> metavar "SEED_NAME" <> help
+            "The name of the game seed"
           )
-    <*> switch (long "quiet" <> short 'q' <> help "Whether to be quiet")
     <*> option
           auto
-          (  long "enthusiasm"
-          <> help "How enthusiastically to greet"
+          (  long "num-gens"
+          <> short 'n'
+          <> help "The number of generations to run for"
           <> showDefault
-          <> value 1
-          <> metavar "INT"
+          <> value 10
+          <> metavar "NUM_GENS"
           )
 
 main :: IO ()
-main = greet =<< execParser opts
+main = conway =<< execParser opts
  where
   opts = info
-    (sample <**> helper)
-    (fullDesc <> progDesc "Print a greeting for TARGET" <> header
-      "hello - a test for optparse-applicative"
+    (conwayOpts <**> helper)
+    (fullDesc <> progDesc "Conway's Game of Life" <> header
+      "Run for NUM_GENS generations starting with SEED_NAME"
     )
 
-greet :: Sample -> IO ()
-greet (Sample h False n) = putStrLn $ "Hello, " ++ h ++ replicate n '!'
-greet _                  = return ()
+conway :: ConwayOpts -> IO ()
+conway (ConwayOpts s n) = do
+  putStrLn $ "Running " ++ s ++ " for " ++ show n ++ " generations."
+  conwayNamedSeed s n
+  return ()
+
+
+conwayNamedSeed :: String -> Int -> IO ()
+conwayNamedSeed s _ | s == "glider" = runGlider
+                    | otherwise     = noSuchSeed s
+
+noSuchSeed :: String -> IO ()
+noSuchSeed s = putStrLn $ "No such seed: '" ++ s ++ "'!"
+

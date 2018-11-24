@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1ff34cef4fa361b460fe1a020f272d2cd3a95ed36a6048970ba659dd8d7b28d5
+-- hash: 8348a48c425ceb13849f0e53c367565c46f02ac4236bbfe5437a35c45c89545d
 
 name:           conway
 version:        0.1.0.0
@@ -27,7 +27,9 @@ source-repository head
 
 library
   exposed-modules:
-      Lib
+      Conway
+      Conway.GameOfLife
+      Conway.Glider
   other-modules:
       Paths_conway
   hs-source-dirs:
@@ -54,7 +56,6 @@ test-suite conway-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      GliderTest
       Paths_conway
   hs-source-dirs:
       test
