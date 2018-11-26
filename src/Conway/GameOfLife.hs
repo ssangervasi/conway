@@ -5,10 +5,10 @@ module Conway.GameOfLife
   )
 where
 
-data GoL = GoL (List2D Cell)
+newtype GoL = GoL (List2D Cell)
 
 instance Show GoL where
-  show (GoL cellRows) = unlines $ map concat $ map (map show) cellRows
+  show (GoL cellRows) = unlines $ map (concatMap show) cellRows
 
 data Cell = Dead | Live deriving (Eq, Ord)
 
@@ -22,7 +22,7 @@ conwayNGenerations n gol =
 
 nextGeneration :: GoL -> GoL
 nextGeneration gol@(GoL cellRows) =
-  let nextRow rowCoords = map (nextCell gol) rowCoords
+  let nextRow = map (nextCell gol)
   in  GoL $ map nextRow $ coordinate cellRows
 
 nextCell :: GoL -> Coords -> Cell
@@ -41,7 +41,7 @@ countLiveNeighbors :: GoL -> Coords -> Int
 countLiveNeighbors (GoL list2D) (i, j) =
   let getCell   = list2DLookupDefault list2D Dead
       neighbors = map getCell $ neighborCoords (i, j)
-  in  length $ filter ((==) Live) neighbors
+  in  length $ filter (Live ==) neighbors
 
 
 type List2D a = [[a]]
@@ -51,15 +51,15 @@ coordinate :: List2D a -> List2D Coords
 coordinate [] = []
 coordinate cellRows =
   let rowCount = length cellRows
-      coordinateCols (row, rowIndex) =
+      coordinateCols row rowIndex =
         let colCount = length row
         in  [ (rowIndex, c) | c <- [0 .. (colCount - 1)] ]
-  in  map coordinateCols (zip cellRows [0 .. (rowCount - 1)])
+  in  zipWith coordinateCols cellRows [0 .. (rowCount - 1)]
 
 list2DLookupDefault :: List2D a -> a -> Coords -> a
 list2DLookupDefault list2D d (i, j) | i < 0 || j < 0              = d
-                                    | (length list2D) <= i        = d
-                                    | (length (list2D !! i)) <= j = d
+                                    | length list2D <= i        = d
+                                    | length (list2D !! i) <= j = d
                                     | otherwise = list2D !! i !! j
 
 neighborCoords :: Coords -> [Coords]
