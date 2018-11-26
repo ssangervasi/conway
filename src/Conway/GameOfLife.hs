@@ -5,6 +5,8 @@ module Conway.GameOfLife
   )
 where
 
+import           Control.Monad.State
+
 newtype GoL = GoL (List2D Cell)
 
 instance Show GoL where
@@ -16,14 +18,25 @@ instance Show Cell where
   show Dead = "⬜️"
   show Live = "🔳"
 
+
+-- With state monad
+conwayNGenerationsState :: Int -> GoL -> [GoL]
+conwayNGenerationsState n gol =
+  let s = runState nextGenerationState gol
+      
+  in []
+
+nextGenerationState :: State GoL ()
+nextGenerationState = state $ \gol -> ((), nextGeneration gol)
+
+-- Without state monad
 conwayNGenerations :: Int -> GoL -> [GoL]
 conwayNGenerations n gol =
   scanl (\gen _ -> nextGeneration gen) gol [1 .. (n - 1)]
 
 nextGeneration :: GoL -> GoL
 nextGeneration gol@(GoL cellRows) =
-  let nextRow = map (nextCell gol)
-  in  GoL $ map nextRow $ coordinate cellRows
+  let nextRow = map (nextCell gol) in GoL $ map nextRow $ coordinate cellRows
 
 nextCell :: GoL -> Coords -> Cell
 nextCell gol@(GoL cellRows) cellCoords =
@@ -57,7 +70,7 @@ coordinate cellRows =
   in  zipWith coordinateCols cellRows [0 .. (rowCount - 1)]
 
 list2DLookupDefault :: List2D a -> a -> Coords -> a
-list2DLookupDefault list2D d (i, j) | i < 0 || j < 0              = d
+list2DLookupDefault list2D d (i, j) | i < 0 || j < 0            = d
                                     | length list2D <= i        = d
                                     | length (list2D !! i) <= j = d
                                     | otherwise = list2D !! i !! j
