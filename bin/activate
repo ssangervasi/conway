@@ -7,3 +7,21 @@ build() {
 run() {
   stack exec conway-exe -- $@
 }
+
+spec() {
+  stack test $@
+}
+
+conway_prompt() {
+  export PS1="🔳 $PS1"
+}
+
+conway_prompt
+
+echo '
+Heck yeah, activated!
+Use this stuff:
+  - build
+  - run
+  - spec
+'
