@@ -1,8 +1,10 @@
--- This file has been generated from package.yaml by hpack version 0.28.2.
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.31.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1dd50bad63fa9d7b4e77a2638ba4a50af471786feb1db7d1b7ae7fa15c68f4fa
+-- hash: 171621a87e24f6c8845e3c728a55f2cd3b9855c1540583f68fb3041cbf1e7137
 
 name:           conway
 version:        0.1.0.0
@@ -15,10 +17,9 @@ copyright:      2018 Sebastian Sangervasi
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
-cabal-version:  >= 1.10
 extra-source-files:
-    ChangeLog.md
     README.md
+    ChangeLog.md
 
 source-repository head
   type: git
