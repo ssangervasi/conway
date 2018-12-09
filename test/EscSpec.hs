@@ -5,15 +5,18 @@ where
 
 import           Test.Hspec
 import           Control.Monad.State
+import           Control.Exception (evaluate)
 
 
-newtype Queue a = Queue { items :: [a] } deriving (Show)
+newtype Queue a = Queue { items :: [a] } deriving (Show, Eq)
 
 empty :: Queue a
 empty = Queue ([] :: [a])
 
 size :: Queue a -> Int
 size = length . items
+
+-- Non state queue
 
 push :: a -> Queue a -> (a, Queue a)
 push a q =
@@ -29,6 +32,10 @@ shift q =
       (a, as) = shiftHelper q
   in  (a, Queue as)
 
+-- State Queue
+
+pushS :: a -> State (Queue a) a
+pushS a = state $ push a
 
 spec :: Spec
 spec = do
@@ -51,24 +58,48 @@ spec = do
 
   describe "Queue" $ do
     it "pushes" $ do
-      let q0      = empty :: Queue Integer
-          (_, q1) = push 1 q0
-      print ("empty", q0)
-      size q0 `shouldBe` 0
-      print ("one item", q1)
-      size q1 `shouldBe` 1
-
-    it "shifts" $ do
-      let q3 = Queue [1, 2, 3]
-          (one, q2) = shift q3
-      print ("full", q3)
-      size q3 `shouldBe` 3
-      print ("shifted", q2)
-      size q2 `shouldBe` 2
-      print ("shift result", one)
+      let q      = empty :: Queue Integer
+          (one, q1) = push 1 q
+      q1 `shouldBe` Queue [1]
       one `shouldBe` 1
 
+    it "shifts" $ do
+      let q123 = Queue [1, 2, 3]
+          (one, q23) = shift q123
+          (two, q3) = shift q23
+      q23 `shouldBe` Queue [2, 3]
+      q3 `shouldBe` Queue [3]
+      one `shouldBe` 1
+      two `shouldBe` 2
+
+    it "throws an error when shifting from an empty queue" $ do
+      let runsIntoError :: IO ()
+          runsIntoError = do
+            let x = shift (empty :: Queue Integer)
+            print x
+
+      runsIntoError `shouldThrow` errorCall "Cannot shift from empty queue!"
+
   describe "State Queue" $ do
-    it "runs state" pending
-    it "works with `do`" pending
+    describe "pushS" $ do
+      let q = empty :: Queue Integer
+
+      it "works with `runState`" $ do
+        let toPush = 1
+            pusher = pushS toPush
+            (pushed, q1) = runState pusher q
+        q1 `shouldBe` Queue [1]
+        pushed `shouldBe` toPush
+
+      it "works with `do`" $ do
+        let push123 = do
+              pushS 1
+              pushS 2
+              pushS 3
+            (_, q123) = runState push123 empty
+        q123 `shouldBe` Queue [1, 2, 3]
+
+    describe "shiftS" $ do
+      it "works with `runState`" $ do
+        pending
 
