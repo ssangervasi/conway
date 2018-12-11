@@ -37,6 +37,12 @@ shift q =
 pushS :: a -> State (Queue a) a
 pushS a = state $ push a
 
+shiftS :: State (Queue a) a
+shiftS = state $ shift
+
+
+--  Tests
+
 spec :: Spec
 spec = do
   describe "Playing with monads" $ do
@@ -58,7 +64,7 @@ spec = do
 
   describe "Queue" $ do
     it "pushes" $ do
-      let q      = empty :: Queue Integer
+      let q         = empty :: Queue Integer
           (one, q1) = push 1 q
       q1 `shouldBe` Queue [1]
       one `shouldBe` 1
@@ -85,11 +91,10 @@ spec = do
       let q = empty :: Queue Integer
 
       it "works with `runState`" $ do
-        let toPush = 1
-            pusher = pushS toPush
+        let pusher = pushS 1
             (pushed, q1) = runState pusher q
         q1 `shouldBe` Queue [1]
-        pushed `shouldBe` toPush
+        pushed `shouldBe` 1
 
       it "works with `do`" $ do
         let push123 = do
@@ -100,6 +105,22 @@ spec = do
         q123 `shouldBe` Queue [1, 2, 3]
 
     describe "shiftS" $ do
+      let q123 = Queue [1, 2, 3]
+
       it "works with `runState`" $ do
-        pending
+        let (shifted, q23) = runState shiftS q123
+
+        q23 `shouldBe` Queue [2, 3]
+        shifted `shouldBe` 1
+
+      it "works with `do`" $ do
+        let shift123 :: State (Queue a) (a, a, a)
+            shift123 = do
+              one <- shiftS
+              two <- shiftS
+              three <- shiftS
+              return (one, two, three)
+            (shifteds, q) = runState shift123 q123
+        q `shouldBe` empty
+        shifteds `shouldBe` (1, 2, 3)
 
