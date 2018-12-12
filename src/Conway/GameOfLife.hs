@@ -5,31 +5,31 @@ module Conway.GameOfLife
   )
 where
 
-import           Control.Monad.State
+-- Game of Life
+newtype GoL = GoL (List2D Cell) deriving (Eq)
 
-newtype GoL = GoL (List2D Cell)
+emptyGoL = GoL [[]]
 
 instance Show GoL where
-  show (GoL cellRows) = unlines $ map (concatMap show) cellRows
+  show (GoL cellRows) =
+    let rowStrings = map (concatMap show) cellRows
+        nonEmptyRowStrings = filter (not . null) rowStrings
+    in unlines nonEmptyRowStrings
 
+instance Read GoL where
+  readsPrec _ = readGoL
+
+readGoL :: String -> [(GoL, String)]
+readGoL s = [(emptyGoL, "")]
+
+-- Cell
 data Cell = Dead | Live deriving (Eq, Ord)
 
 instance Show Cell where
   show Dead = "⬜️"
   show Live = "🔳"
 
-
--- With state monad
-conwayNGenerationsState :: Int -> GoL -> [GoL]
-conwayNGenerationsState n gol =
-  let s = runState nextGenerationState gol
-      
-  in []
-
-nextGenerationState :: State GoL ()
-nextGenerationState = state $ \gol -> ((), nextGeneration gol)
-
--- Without state monad
+-- Game transitions
 conwayNGenerations :: Int -> GoL -> [GoL]
 conwayNGenerations n gol =
   scanl (\gen _ -> nextGeneration gen) gol [1 .. (n - 1)]
