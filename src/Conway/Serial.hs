@@ -1,23 +1,21 @@
 module Conway.Serial where
 
-import qualified Data.Text as T
-
 import Conway.GameOfLife
 
-golToStr :: GoL -> String
-golToStr (GoL cellRows) = 
-  let rowStrings = map (concatMap cellToStr) cellRows
+golToString :: GoL -> String
+golToString (GoL cellRows) = 
+  let rowStrings = map (concatMap cellToString) cellRows
       nonEmptyRowStrings = filter (not . null) rowStrings
   in unlines nonEmptyRowStrings
 
-strToGoL :: String -> GoL
-strToGoL str = 
-  let cellifyRow = (map (strToCell . T.unpack)) . (T.chunksOf 1)
-      cellRows = map cellifyRow $ T.lines (T.pack str)
+stringToGoL :: String -> GoL
+stringToGoL str = 
+  let cellifyRow = (map stringToCell) . (chunksOf 1)
+      cellRows = map cellifyRow $ lines str
   in GoL cellRows
 
-slices :: Int -> [a] -> [[a]]
-slices size list =
+chunksOf :: Int -> [a] -> [[a]]
+chunksOf size list =
   let nextSlice :: [a] -> a -> [a]
       nextSlice lastSlice nextItem
         | (length lastSlice) < size = lastSlice ++ [nextItem]
@@ -31,11 +29,23 @@ slices size list =
         | otherwise = fullSlices
   in result
 
-cellToStr :: Cell -> String
-cellToStr Live = "🔳"
-cellToStr _    = "⬜️"
+cellToChar :: Cell -> Char
+-- Emoji ⬜️
+cellToChar Dead = '\128307'
+-- Emoji 🔳
+cellToChar Live = '\11036'
 
-strToCell :: String -> Cell
-strToCell str
-  | str == "🔳" = Live
-  | otherwise   = Dead
+charToCell :: Char -> Cell
+charToCell chr
+  | chr == cellToChar Live = Live
+  | chr == cellToChar Dead = Dead
+
+cellToString :: Cell -> String
+cellToString cell = [cellToChar cell]
+
+stringToCell :: String -> Cell
+stringToCell str
+  | length str == 1 = (charToCell . head) str
+
+
+

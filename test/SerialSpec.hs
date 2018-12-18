@@ -1,41 +1,49 @@
 module SerialSpec (spec) where
 
-import           Test.Hspec
+import Test.Hspec
+import qualified Data.Text as T
 
-import           Conway.GameOfLife
-import           Conway.Seeds
-import           Conway.Serial
+import Conway.GameOfLife
+import Conway.Seeds
+import Conway.Serial
 
+puts = putStrLn
 
 spec :: Spec
 spec = do
-  describe "golToStr" $ do
+  describe "golToString" $ do
     context "with an empty game" $ do
       let gol = emptyGoL
 
       it "is an empty string" $ do
-        golToStr gol `shouldBe` ""
+        golToString gol `shouldBe` ""
 
     context "with a glider" $ do
       let gol = glider
 
       it "matches the glider string" $ do
-        golToStr gol `shouldBe` gliderString
+        puts "Output:"
+        puts $ golToString gol
+        golToString gol `shouldBe` gliderString
 
-  describe "strToGoL" $ do
+  describe "stringToGoL" $ do
     context "with an empty string" $ do
       let golString = ""
 
       it "is an empty board" $ do
-        strToGoL golString `shouldBe` emptyGoL
+        stringToGoL golString `shouldBe` emptyGoL
 
     context "with a glider" $ do
       let golString = gliderString
 
       it "matches the glider board" $ do
-        strToGoL golString `shouldBe` glider
+        puts "Output:"
+        puts $ golString
+        print glider
+        print $ stringToGoL golString
+        stringToGoL golString `shouldBe` glider
 
-  describe "slices" $ do
+  describe "chunksOf" $ do
     let testTitle size list expected = 
           (    (show size)
             ++ " | "
@@ -50,7 +58,7 @@ spec = do
           expected = [] :: [[Int]]
         
       it (testTitle size list expected) $ do
-        slices size list `shouldBe` expected
+        chunksOf size list `shouldBe` expected
 
     context "size 1 of [1..3]" $ do
       let size = 1
@@ -58,7 +66,7 @@ spec = do
           expected = [[1], [2], [3]]
         
       it (testTitle size list expected) $ do
-        slices size list `shouldBe` expected
+        chunksOf size list `shouldBe` expected
 
     context "size 2 of [1..5]" $ do
       let size = 2
@@ -66,4 +74,4 @@ spec = do
           expected = [[1, 2], [3, 4], [5]]
         
       it (testTitle size list expected) $ do
-        slices size list `shouldBe` expected
+        chunksOf size list `shouldBe` expected
