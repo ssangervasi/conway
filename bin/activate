@@ -8,6 +8,10 @@ run() {
   stack exec conway-exe -- $@
 }
 
+console() {
+  stack ghci
+}
+
 spec() {
   stack test $@
 }
@@ -24,4 +28,5 @@ Use this stuff:
   - build
   - run
   - spec
+  - console
 '
