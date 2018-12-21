@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 7d9e8d2b856c649f0add1b8dd8149a2e794e7e275a01d66f911bca61f3d19c6d
+-- hash: fdf0df331db6c50653329f311b8249268e5ad5f366ab8691ccb2c306420040ba
 
 name:           conway
 version:        0.1.0.0
@@ -41,7 +41,6 @@ library
       base >=4.7 && <5
     , mtl >=2.2 && <3
     , optparse-applicative >=0.14 && <1
-    , text
   default-language: Haskell2010
 
 executable conway-exe
@@ -56,7 +55,6 @@ executable conway-exe
     , conway
     , mtl >=2.2 && <3
     , optparse-applicative >=0.14 && <1
-    , text
   default-language: Haskell2010
 
 test-suite conway-test
@@ -76,5 +74,4 @@ test-suite conway-test
     , hspec
     , mtl >=2.2 && <3
     , optparse-applicative >=0.14 && <1
-    , text
   default-language: Haskell2010

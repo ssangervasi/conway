@@ -1,7 +1,6 @@
 module SerialSpec (spec) where
 
 import Test.Hspec
-import qualified Data.Text as T
 
 import Conway.GameOfLife
 import Conway.Seeds
@@ -13,7 +12,7 @@ spec = do
     let testTitle gol expected =
           unlines [
               "Board:"
-            , (show gol)
+            , show gol
             , "Should become:"
             , expected
           ]
@@ -34,7 +33,7 @@ spec = do
               "String board:"
             , golString
             , "Should become:"
-            , (show expected)
+            , show expected
           ]
 
         toGolTest golString expected =
@@ -50,11 +49,11 @@ spec = do
   describe "chunksOf" $ do
     let testTitle size list expected = 
           concat [
-              (show size)
+              show size
             , " | "
-            , (show list)
+            , show list
             , " -> "
-            , (show expected)
+            , show expected
           ]
 
         chunkTest size list expected = 

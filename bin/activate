@@ -12,13 +12,24 @@ console() {
   stack ghci
 }
 
-spec() {
+# Plugin for my dev-tools 
+
+run_spec_command() {
   local pattern="$1"
   local test_arguments
   if [[ -n "$pattern" ]]; then
     test_arguments="-m $pattern"
   fi
   stack test --test-arguments "$test_arguments"
+}
+
+run_lint_command() {
+  local paths="$1"
+  local hlint_arguments="."
+  if [[ -n "$paths" ]]; then
+    hlint_arguments="$paths"
+  fi
+  hlint "$hlint_arguments"
 }
 
 conway_prompt() {
@@ -33,5 +44,6 @@ Use this stuff:
   - build
   - run
   - spec
+  - lint
   - console
 '
