@@ -25,7 +25,6 @@ description:
 dependencies:
   - base >= 4.7 && < 5
   - mtl >= 2.2 && < 3
-  - optparse-applicative >= 0.14 && < 1
 
 library:
   source-dirs: src
@@ -41,6 +40,7 @@ executables:
       - -Wall
     dependencies:
       - conway
+      - optparse-applicative >= 0.14 && < 1
 
 tests:
   conway-test:

@@ -1,9 +1,9 @@
 module GameOfLifeSpec (spec) where
 
-import           Test.Hspec
+import Test.Hspec
 
-import           Conway.GameOfLife
-import           Conway.Seeds
+import Conway.GameOfLife
+import Conway.Seeds
 
 
 spec :: Spec

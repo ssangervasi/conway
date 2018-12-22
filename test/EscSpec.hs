@@ -3,9 +3,9 @@ module EscSpec
   )
 where
 
-import           Test.Hspec
-import           Control.Monad.State
-import           Control.Exception (evaluate)
+import Test.Hspec
+import Control.Monad.State
+import Control.Exception (evaluate)
 
 
 newtype Queue a = Queue { items :: [a] } deriving (Show, Eq)

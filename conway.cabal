@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: fdf0df331db6c50653329f311b8249268e5ad5f366ab8691ccb2c306420040ba
+-- hash: eb23c49a566c578b65b9c091d313adcd72a026883bb1363856a3ba61834e5496
 
 name:           conway
 version:        0.1.0.0
@@ -29,10 +29,10 @@ library
   exposed-modules:
       Conway
       Conway.GameOfLife
-      Conway.Glider
       Conway.Grid
       Conway.Seeds
       Conway.Serial
+      Puts
   other-modules:
       Paths_conway
   hs-source-dirs:
@@ -40,7 +40,6 @@ library
   build-depends:
       base >=4.7 && <5
     , mtl >=2.2 && <3
-    , optparse-applicative >=0.14 && <1
   default-language: Haskell2010
 
 executable conway-exe
@@ -73,5 +72,4 @@ test-suite conway-test
     , conway
     , hspec
     , mtl >=2.2 && <3
-    , optparse-applicative >=0.14 && <1
   default-language: Haskell2010

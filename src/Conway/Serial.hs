@@ -31,9 +31,9 @@ chunksOf size list =
 
 cellToChar :: Cell -> Char
 -- Emoji ⬜️
-cellToChar Dead = '\128307'
+cellToChar Dead = '\11036'
 -- Emoji 🔳
-cellToChar Live = '\11036'
+cellToChar Live = '\128307'
 
 charToCell :: Char -> Cell
 charToCell chr
