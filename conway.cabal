@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: eb23c49a566c578b65b9c091d313adcd72a026883bb1363856a3ba61834e5496
+-- hash: 8480ccbe89a704502eab85c1840c6f1eb5eacf65261584f5d476eac92728633c
 
 name:           conway
 version:        0.1.0.0
@@ -32,7 +32,7 @@ library
       Conway.Grid
       Conway.Seeds
       Conway.Serial
-      Puts
+      PrintHelpers
   other-modules:
       Paths_conway
   hs-source-dirs:
@@ -61,7 +61,9 @@ test-suite conway-test
   main-is: Spec.hs
   other-modules:
       EscSpec
+      ExampleSpec
       GameOfLifeSpec
+      PrintHelpersSpec
       SerialSpec
       Paths_conway
   hs-source-dirs:

@@ -5,7 +5,7 @@ build() {
 }
 
 run() {
-  stack exec conway-exe -- $@
+  build && stack exec conway-exe -- $@
 }
 
 console() {

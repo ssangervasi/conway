@@ -3,7 +3,7 @@ module Main (main) where
 import Options.Applicative
 import Data.Semigroup ( (<>) )
 
-import Puts
+import PrintHelpers
 import qualified Conway.GameOfLife as GoL
 import qualified Conway.Seeds as Seeds
 import Conway.Serial (golToString)
@@ -20,19 +20,20 @@ main = conway =<< execParser opts
 
 data ConwayOpts = ConwayOpts
   { seedName :: String
-  , numGens :: Int }
+  , numGens :: Int
+  , printHeader :: Bool
+  }
 
 conwayOpts :: Parser ConwayOpts
 conwayOpts =
   ConwayOpts
     <$> strOption
-          (long "seed-name"
+          (  long "seed-name"
           <> short 's'
           <> metavar "SEED_NAME"
-          <> help  "The name of the game seed"
+          <> help  "The name of the game seed" 
           )
-    <*> option
-          auto
+    <*> option auto
           (  long "num-gens"
           <> short 'n'
           <> help "The number of generations to run for"
@@ -40,19 +41,33 @@ conwayOpts =
           <> value 10
           <> metavar "NUM_GENS"
           )
+    <*> switch
+          (  long "print-header"
+          <> short 'H'
+          <> help "Whether to print a header before the results."
+          )
+
 
 conway :: ConwayOpts -> IO ()
-conway (ConwayOpts s n) = do
-  puts $ unwords [
-       "Running"
-      , s
-      , "for"
-      , show n
-      , "generations."
-    ]
+conway opts@ConwayOpts{seedName=s, numGens=n} = do
+  handlePrintHeader opts
   conwayNamedSeed s n
   return ()
 
+handlePrintHeader :: ConwayOpts -> IO ()
+handlePrintHeader ConwayOpts
+  { printHeader=shouldPrint
+  , seedName=s
+  , numGens=n
+  }
+  | shouldPrint = puts formatHeader
+  | otherwise = return ()
+  where
+    formatHeader = linesOfWords
+      [ ["Conway's Game of Life"]
+      , ["Starting with seed:", quote s]
+      , ["Number of generations:", show n]
+      ]
 
 conwayNamedSeed :: String -> Int -> IO ()
 conwayNamedSeed s _
@@ -68,7 +83,5 @@ noSuchSeed s = puts $ concat [
 
 runGlider :: IO ()
 runGlider = do
-  puts "Conway's Game of Life"
-  puts "Starting with seed: 'Glider'"
   let fiveGens = GoL.conwayNGenerations 15 Seeds.gliderWithSpace
   sequence_ $ map puts $ map golToString fiveGens
