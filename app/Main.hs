@@ -49,9 +49,9 @@ conwayOpts =
 
 
 conway :: ConwayOpts -> IO ()
-conway opts@ConwayOpts{seedName=s, numGens=n} = do
+conway opts = do
   handlePrintHeader opts
-  conwayNamedSeed s n
+  conwayNamedSeed opts
   return ()
 
 handlePrintHeader :: ConwayOpts -> IO ()
@@ -69,19 +69,18 @@ handlePrintHeader ConwayOpts
       , ["Number of generations:", show n]
       ]
 
-conwayNamedSeed :: String -> Int -> IO ()
-conwayNamedSeed s _
-  | s == "glider" = runGlider
-  | otherwise     = noSuchSeed s
+conwayNamedSeed :: ConwayOpts -> IO ()
+conwayNamedSeed ConwayOpts{seedName=name, numGens=n} =
+  case (Seeds.findByName name) of
+    Just gol -> dumpGens $ GoL.conwayNGenerations n gol
+    Nothing  -> noSuchSeed name
 
 noSuchSeed :: String -> IO ()
-noSuchSeed s = puts $ concat [
-      "No such seed: '"
-    , s
-    , "'!"
-  ]
+noSuchSeed name = puts $ concat
+    [ "No such seed:"
+    , quote name
+    , "!"
+    ]
 
-runGlider :: IO ()
-runGlider = do
-  let fiveGens = GoL.conwayNGenerations 15 Seeds.gliderWithSpace
-  sequence_ $ map puts $ map golToString fiveGens
+dumpGens :: [GoL.GoL] -> IO ()
+dumpGens = sequence_ . (map puts) . (map golToString)

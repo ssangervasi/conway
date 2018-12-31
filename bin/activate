@@ -1,13 +1,31 @@
 #!/bin/bash
 
+register() {
+  registered_names="$registered_names $1"  
+}
+
+register build
 build() {
   stack build $@
 }
 
+register run
 run() {
-  build && stack exec conway-exe -- $@
+  echo "stack exec conway-exe -- $@"
+  stack exec conway-exe -- $@
 }
 
+register rerun
+rerun() {
+  build && run $@
+}
+
+register demo
+demo() {
+  rerun --seed-name glider --num-gens 5
+}
+
+register console
 console() {
   stack ghci
 }
@@ -36,14 +54,16 @@ conway_prompt() {
   export PS1="🔳 $PS1"
 }
 
-conway_prompt
-
-echo '
+register .help
+.help() {
+  echo '
 Heck yeah, activated!
-Use this stuff:
-  - build
-  - run
-  - spec
-  - lint
-  - console
-'
+Use this stuff:'
+  for name in $registered_names; do
+    echo '  - '"$name"
+  done
+  echo
+}
+
+conway_prompt
+.help

@@ -3,6 +3,11 @@ module Conway.Seeds where
 import Conway.GameOfLife
 import Conway.Serial
 
+findByName :: String -> Maybe GoL 
+findByName name
+  | name == "glider" = Just gliderWithSpace
+  | otherwise = Nothing
+
 glider = GoL
   [ [x, x, o]
   , [o, x, o]
