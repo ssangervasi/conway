@@ -17,12 +17,17 @@ run() {
 
 register rerun
 rerun() {
-  build && run $@
+  build &&
+    clear &&
+    run $@
 }
 
 register demo
 demo() {
-  rerun --seed-name glider --num-gens 5
+  rerun \
+    --seed-name glider \
+    --num-gens 5 \
+    --verbose
 }
 
 register console
